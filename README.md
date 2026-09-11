@@ -178,12 +178,17 @@ Result: DoltgreSQL's output differs from PostgreSQL's on 4 line(s), marked with 
 
 ## Other observations
 
-Each was run on the same two images with the same `psql` command:
+Each was run on the same two images with the `psql` client inside each container:
 
 - The types are missing too: `SELECT 'fat cats'::tsvector` answers ``unable to resolve type `tsvector` ``,
   `SELECT 'cat'::tsquery` answers ``unable to resolve type `tsquery` ``, and
   `CREATE TABLE tv (id int, v tsvector)` answers `type "tsvector" does not exist`. PostgreSQL answers
   `'cats' 'fat'` and `'cat'`, and creates the table.
+- The schema-qualified type name is accepted, but as the type `unknown`:
+  `pg_typeof('fat cats'::pg_catalog.tsvector)` answers `unknown`, where PostgreSQL answers `tsvector`;
+  `SELECT 'fat cats'::pg_catalog.tsvector` answers `fat cats`, where PostgreSQL answers `'cats' 'fat'`; and
+  `CREATE TABLE tv2 (v pg_catalog.tsvector)` succeeds. The qualified function,
+  `pg_catalog.to_tsvector('english', 'fat cats')`, answers `function: 'to_tsvector' not found`.
 - The forms without a configuration, `to_tsvector('fat cats')` and `to_tsquery('cat')`, are not found
   either, and neither are `plainto_tsquery('english', 'cat')` and
   `ts_rank(to_tsvector('fat cats'), to_tsquery('cat'))`.
