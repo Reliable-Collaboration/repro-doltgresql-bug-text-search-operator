@@ -13,6 +13,8 @@ psql:/tmp/repro.sql:12: ERROR:  @@ is not yet supported
 
 PostgreSQL 18.6 answers `'cat':2 'fat':1` and `'cat'`, and `t` for both matches.
 
+Reported upstream: https://github.com/dolthub/doltgresql/issues/3335
+
 ## Reproduce it
 
 You need Docker and a POSIX shell: Linux, macOS, or Windows with WSL. The first run downloads the images.
